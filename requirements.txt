@@ -1,5 +1,2 @@
-opencc
-zhconv
 requests
 ratelimit
-eviltransform

@@ -14,13 +14,13 @@ parser.add_argument(
     "--data-file",
     type=str,
     default="./geoname_data/cities500.txt",
-    help="input geodata file",
+    help="входной файл geodata",
 )
 
 parser.add_argument(
-    "--country-code", type=str, default="CN", help="country code to be generated"
+    "--country-code", type=str, default="RU", help="код страны для генерации"
 )
-# 解析参数
+# Разбор аргументов
 args = parser.parse_args()
 
 NOMINATIM_QPS = int(os.environ.get("NOMINATIM_QPS", "1"))
@@ -50,7 +50,7 @@ def get_loc_from_locationiq(lat, lon):
         "lat": lat,
         "lon": lon,
         "format": "geocodejson",
-        "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+        "accept-language": "ru,ru-RU;q=0.9,en;q=0.8",
     }
 
     try:
@@ -60,18 +60,18 @@ def get_loc_from_locationiq(lat, lon):
             return response.json()
     except Exception as e:
         print(e)
-        logger.error(f"{lat},{lon} failed to get location")
+        logger.error(f"{lat},{lon} не удалось получить местоположение")
         pass
     return None
 
 
 def process_file(file_path, country_code, output_file, existing_data={}):
-    # 打开并读取文件
+    # Открываем и читаем файл
     with open(file_path, "r", encoding="utf-8") as file:
         for line in file:
             fields = line.strip().split("\t")
 
-            # 检查国家码
+            # Проверяем код страны
             if len(fields) > 17 and fields[8] == country_code:
                 loc = {"lon": str(fields[5]), "lat": str(fields[4])}
                 if (loc["lon"], loc["lat"]) in existing_data:
@@ -95,7 +95,7 @@ def query_and_store(coordinate, output_file):
         )
         top_four = [name for _, name in sorted_items[:4]]
 
-        # 不足 4 个用空字符串补齐
+        # Если меньше 4 уровней — дополняем пустыми строками
         while len(top_four) < 4:
             top_four.append("")
 
@@ -103,8 +103,8 @@ def query_and_store(coordinate, output_file):
             record[f"admin_{i+1}"] = top_four[i]
 
     else:
-        # 打印失败的坐标
-        logger.error(f"查询失败，坐标: {coordinate}")
+        # Выводим неудачные координаты
+        logger.error(f"Ошибка запроса, координаты: {coordinate}")
         record = {
             "latitude": coordinate["lat"],
             "longitude": coordinate["lon"],
@@ -118,19 +118,19 @@ def query_and_store(coordinate, output_file):
     with open(output_file, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=GEODATA_HEADER)
 
-        # 如果文件为空，写入表头
+        # Если файл пуст, записываем заголовок
         if file.tell() == 0:
             writer.writeheader()
 
-        # 写入数据
+        # Записываем данные
         writer.writerows([record])
 
 
 def main():
     country_code = args.country_code
-    logger.info(f"待处理国家码：{country_code}")
+    logger.info(f"Обрабатываемый код страны: {country_code}")
     if not os.path.isfile(GEONAME_DATA_FILE):
-        raise Exception(f"文件 '{GEONAME_DATA_FILE}' 不存在，请下载后重试。")
+        raise Exception(f"Файл '{GEONAME_DATA_FILE}' не существует, скачайте и повторите.")
     output_file = os.path.join("data", f"{country_code}.csv")
     existing_data = load_geo_data(output_file)
     process_file(

@@ -7,7 +7,7 @@ DEFAULT_TRANSLATIONS = (
     Path(__file__).resolve().parent.parent
     / "i18n-iso-countries"
     / "langs"
-    / "zh.json"
+    / "ru.json"
 )
 
 
@@ -48,21 +48,21 @@ def translate_country_info(input_path, output_path, translations_path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Translate country names in GeoNames countryInfo.txt."
+        description="Перевести названия стран в GeoNames countryInfo.txt на русский."
     )
-    parser.add_argument("--input", required=True, help="Input countryInfo.txt path")
-    parser.add_argument("--output", required=True, help="Output countryInfo.txt path")
+    parser.add_argument("--input", required=True, help="Путь к входному countryInfo.txt")
+    parser.add_argument("--output", required=True, help="Путь к выходному countryInfo.txt")
     parser.add_argument(
         "--translations",
         default=DEFAULT_TRANSLATIONS,
-        help="i18n-iso-countries locale JSON used as the country-name mapping",
+        help="Локализованный JSON i18n-iso-countries, используемый как словарь названий стран",
     )
     args = parser.parse_args()
 
     translated_count = translate_country_info(
         args.input, args.output, args.translations
     )
-    print(f"Translated {translated_count} country names into {args.output}")
+    print(f"Переведено названий стран: {translated_count} → {args.output}")
 
 
 if __name__ == "__main__":

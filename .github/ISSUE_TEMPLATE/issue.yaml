@@ -1,49 +1,49 @@
-name: 问题反馈
-description: 反馈使用中发生的问题
+name: Сообщение о проблеме
+description: Сообщить о проблеме, возникшей при использовании
 body:
   #
   - type: markdown
     attributes:
       value: |
         > [!IMPORTANT]  
-        > 如果遇到的问题是边界处识别不准，受限于 Immich 反向地理位置编码的实现，本项目无法解决，请
-        >  - 尝试使用 full 版本的数据
-        >  - 或者去 [GeoNames](https://www.geonames.org/) 提交相关位置的数据，数据收录后在下次发版会加上
+        > Если проблема — неточное распознавание на границе, то из-за особенностей реализации обратного геокодирования Immich этот проект решить её не может. Вместо этого:
+        >  - попробуйте версию данных full;
+        >  - либо добавьте данные о нужной точке на [GeoNames](https://www.geonames.org/); после включения в базу они попадут в следующий релиз.
   - type: input
     id: version
     attributes:
-      label: 使用的数据版本
-      description: 请提供你下载的数据文件名称，例如 geodata_admin_2.zip
+      label: Версия используемых данных
+      description: Укажите имя скачанного файла данных, например geodata_admin_2.zip
       placeholder: ex. geodata_full.zip
     validations:
       required: true
   - type: input
     id: release-data
     attributes:
-      label: 使用的数据发布日期
-      description: 请提供下载的数据文件的发布日期，日期会标明在 Release 的标题上，请尽量先尝试最新版本的数据
+      label: Дата релиза данных
+      description: Укажите дату релиза скачанных данных (она указана в заголовке Release). Желательно сначала попробовать свежую версию.
       placeholder: ex. 2025-03-17
     validations:
       required: true
   - type: input
     id: immich-version
     attributes:
-      label: Immich 版本
-      description: 请提供你使用的 Immich 版本，如果使用的是非 Immich 官方镜像也请提供镜像名，例如 `imagegenius/immich`
+      label: Версия Immich
+      description: Укажите используемую версию Immich. Если используется не официальный образ, укажите и его имя, например `imagegenius/immich`
       placeholder: ex. 1.129.0
     validations:
       required: true
   - type: checkboxes
     id: check
     attributes:
-      label: 数据确认生效
-      description: 请通过 Immich 日志确认数据已经被成功导入（导入失败除外），否则请先排查配置是否正确
+      label: Подтверждение, что данные применились
+      description: Подтвердите через логи Immich, что данные успешно импортированы (кроме случаев, когда импорт не удался); иначе сначала проверьте конфигурацию.
       options:
-        - label: 我确认 Immich 日志里出现了 `10000 geodata imported` 类似的日志，数据已经被成功导入
-        - label: 不，Immich 启动时在导入时报错了
+        - label: Да, в логах Immich появилась запись вроде `10000 geodata imported`, данные успешно импортированы
+        - label: Нет, при запуске Immich импорт завершился ошибкой
   - type: textarea
     id: what-happened
     attributes:
-      label: 遇到的问题
+      label: Что случилось
     validations:
       required: true

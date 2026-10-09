@@ -1,75 +1,75 @@
 #!/bin/bash
 
-# 启用调试模式
+# Включаем режим отладки
 set -e
 
 cd "$(dirname "$0")"
 
-# 获取当前脚本文件名
+# Получаем имя текущего скрипта
 script_name=$(basename "$0")
 geodata_name=${1:-geodata}
 
-echo "开始获取 ZingLix/immich-geodata-cn 仓库最新的 $geodata_name.zip 文件..."
+echo "Получаю последний $geodata_name.zip из репозитория Brooklyn2001/immich-geodata-ru..."
 
-# 获取最新 release 的 API URL
-LATEST_RELEASE_API="https://api.github.com/repos/ZingLix/immich-geodata-cn/releases/latest"
+# URL API последнего release
+LATEST_RELEASE_API="https://api.github.com/repos/Brooklyn2001/immich-geodata-ru/releases/latest"
 
-echo "调用 GitHub API 获取最新 release 信息..."
+echo "Запрашиваю информацию о последнем release через GitHub API..."
 response=$(curl -s $LATEST_RELEASE_API)
 if [[ $? -ne 0 ]]; then
-  echo "错误：无法获取最新 release 信息，请检查网络连接。"
+  echo "Ошибка: не удалось получить информацию о последнем release, проверьте сеть."
   exit 1
 fi
 
-# 从返回的 JSON 中提取 geodata.zip 的下载 URL
+# Извлекаем URL загрузки geodata.zip из JSON
 zip_url=$(echo "$response" | grep -oP '"browser_download_url":\s*"\K(.*'"$geodata_name"'\.zip)(?=")')
 if [[ -z $zip_url ]]; then
-  echo "错误：未找到 $geodata_name.zip 的下载链接，请检查仓库的最新 release。"
+  echo "Ошибка: ссылка на $geodata_name.zip не найдена, проверьте последний release репозитория."
   exit 1
 fi
 
-echo "最新的 $geodata_name.zip 文件下载地址为：$zip_url"
+echo "Адрес загрузки последнего $geodata_name.zip: $zip_url"
 
-# 下载 geodata.zip
-echo "开始下载 $geodata_name.zip 文件..."
+# Скачиваем geodata.zip
+echo "Начинаю загрузку $geodata_name.zip..."
 curl -L -o geodata.zip "$zip_url"
 if [[ $? -ne 0 ]]; then
-  echo "错误：geodata.zip 下载失败，请检查网络连接。"
+  echo "Ошибка: не удалось скачать geodata.zip, проверьте сеть."
   exit 1
 fi
 
-echo "$geodata_name.zip 下载成功！"
+echo "$geodata_name.zip загружен успешно!"
 
-# 解压 geodata.zip 文件
-echo "开始解压 geodata.zip 文件..."
+# Распаковываем geodata.zip
+echo "Начинаю распаковку geodata.zip..."
 unzip geodata.zip -d temp_geodata
 if [[ $? -ne 0 ]]; then
-  echo "错误：解压 geodata.zip 失败，请检查文件完整性。"
+  echo "Ошибка: распаковка geodata.zip не удалась, проверьте целостность файла."
   exit 1
 fi
 
-echo "解压成功，文件已存放在临时目录 temp_geodata/ 中。"
+echo "Распаковка успешна, файлы размещены во временной папке temp_geodata/."
 
-# 将解压内容移动到当前目录，排除当前脚本文件
-echo "将解压内容移动到当前目录，排除脚本文件 ($script_name)..."
+# Переносим содержимое в текущую папку, исключая сам скрипт
+echo "Переношу содержимое в текущую папку, исключая скрипт ($script_name)..."
 for file in temp_geodata/geodata/*; do
   if [[ $(basename "$file") == "$script_name" ]]; then
-    echo "跳过脚本文件：$file"
+    echo "Пропускаю файл скрипта: $file"
     continue
   fi
   mv "$file" ./
 done
 
-# 删除临时文件和文件夹
-echo "清理中间文件..."
+# Удаляем временные файлы и папки
+echo "Очистка промежуточных файлов..."
 rm -rf geodata.zip temp_geodata
 if [[ $? -ne 0 ]]; then
-  echo "警告：中间文件删除失败，请手动检查并删除。"
+  echo "Внимание: не удалось удалить промежуточные файлы, удалите их вручную."
 else
-  echo "中间文件已成功删除。"
+  echo "Промежуточные файлы успешно удалены."
 fi
 
-echo "操作完成，所有 geodata 文件已放置到当前目录！请重启 Immich！"
+echo "Готово, все geodata-файлы размещены в текущей папке! Перезапустите Immich!"
 
-# 替换成你的重启 Immich 的命令，即可更新完数据后自动重启 Immich
+# Замените на вашу команду перезапуска Immich для автоматического перезапуска после обновления данных
 # docker restart immich_server

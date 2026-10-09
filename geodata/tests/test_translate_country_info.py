@@ -16,15 +16,16 @@ class TranslateCountryInfoTest(unittest.TestCase):
             temp_path = Path(temp_dir)
             input_path = temp_path / "input.txt"
             output_path = temp_path / "output.txt"
-            translations_path = temp_path / "zh.json"
+            translations_path = temp_path / "ru.json"
 
             input_path.write_bytes(
                 b"#ISO\tISO3\tISO-Numeric\tfips\tCountry\r\n"
-                b"CN\tCHN\t156\tCH\tChina\tBeijing\r\n"
+                b"RU\tRUS\t643\tRS\tRussia\tMoscow\r\n"
                 b"AN\tANT\t530\tNT\tNetherlands Antilles\tWillemstad\r\n"
             )
             translations_path.write_text(
-                json.dumps({"countries": {"CN": "\u4e2d\u56fd"}}), encoding="utf-8"
+                json.dumps({"countries": {"RU": "\u0420\u043e\u0441\u0441\u0438\u044f"}}),
+                encoding="utf-8",
             )
 
             translated_count = translate_country_info(
@@ -35,7 +36,7 @@ class TranslateCountryInfoTest(unittest.TestCase):
             self.assertEqual(
                 output_path.read_bytes(),
                 b"#ISO\tISO3\tISO-Numeric\tfips\tCountry\r\n"
-                b"CN\tCHN\t156\tCH\t\xe4\xb8\xad\xe5\x9b\xbd\tBeijing\r\n"
+                b"RU\tRUS\t643\tRS\t\xd0\xa0\xd0\xbe\xd1\x81\xd1\x81\xd0\xb8\xd1\x8f\tMoscow\r\n"
                 b"AN\tANT\t530\tNT\tNetherlands Antilles\tWillemstad\r\n",
             )
 

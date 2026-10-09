@@ -2,18 +2,18 @@
 
 set -e
 
-# 设置时间格式和文件名
+# Устанавливаем формат времени и имена файлов
 CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S+00:00")
 TODAY_DATE=$(date -u +"%Y-%m-%d")
 
 export CURRENT_DATE=$CURRENT_DATE
 export TODAY_DATE=$TODAY_DATE
 
-# 运行 prepare_geoname_data.sh
-echo "运行 prepare_geoname_data.sh..."
+# Запуск prepare_geoname_data.sh
+echo "Запуск prepare_geoname_data.sh..."
 bash prepare_geoname_data.sh
 if [[ $? -ne 0 ]]; then
-    echo "运行 prepare_geoname_data.sh 失败！退出。"
+    echo "Ошибка prepare_geoname_data.sh! Выход."
     exit 1
 fi
 
@@ -25,8 +25,8 @@ LIST=("{admin_2}" "{admin_3}" "{admin_4}" "{admin_2} {admin_3}" "{admin_2} {admi
 for item in "${LIST[@]}"; do
     striped_name="${item//\{/}"
     striped_name="${striped_name//\}/}"
-    bash generate_data.sh --cn-pattern "$item" --output "output/geodata_${striped_name// /_}.zip"
-    bash generate_data.sh --cn-pattern "$item" --output "output/geodata_${striped_name// /_}_full.zip" --full
+    bash generate_data.sh --ru-pattern "$item" --output "output/geodata_${striped_name// /_}.zip"
+    bash generate_data.sh --ru-pattern "$item" --output "output/geodata_${striped_name// /_}_full.zip" --full
 done
 
 cp output/geodata_admin_2.zip output/geodata.zip

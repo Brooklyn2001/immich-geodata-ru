@@ -1,27 +1,27 @@
-这是定期自动生成的 Release，如果发现问题请提 issue 并暂时选择到 [此处](https://github.com/ZingLix/immich-geodata-cn/releases) 选择手动发布的 Release 文件。
+Это периодически генерируемый автоматический Release. Если вы обнаружили проблему, создайте issue и на время выберите файл вручную опубликованного Release [здесь](https://github.com/Brooklyn2001/immich-geodata-ru/releases).
 
-如果遇到 Immich 没有更新数据，请手动修改 geodata-date.txt 文件，将其内容中的时间修改为更新的时间（比如当前时间）。
+Если Immich не обновил данные, вручную измените файл `geodata-date.txt`, проставив в нём более позднее время (например, текущее).
 
-**BETA** 提供了多种展示地名的级别，可根据需要选择对应的文件。
+**BETA** — предоставлено несколько уровней отображения названий мест; выбирайте соответствующий файл под ваши нужды.
 
 > [!IMPORTANT]  
-> 每个 release 中的更新时间都是相同的，这意味着如果更换同一个 release 中的不同版本文件，Immich 无法检测到数据更新。
+> Время обновления во всех файлах одного release одинаковое — это значит, что при замене одного файла на другой из того же release Immich не сможет обнаружить обновление данных.
 >
-> 因此，如果想要尝试同个 release 下不同的数据文件，请手动调整解压后的 geodata-date.txt 文件，将其内容中的时间修改为更靠后的时间（比如当前时间），并在 Immich 启动时观察是否有 `10000 geodata records imported` 日志出现，从而确定是否成功更新了数据文件。
+> Поэтому, если хотите попробовать разные файлы данных из одного release, вручную измените распакованный файл `geodata-date.txt`, проставив в нём более позднее время (например, текущее), и при запуске Immich наблюдайте, появится ли в логе `10000 geodata records imported`, чтобы убедиться, что файл данных успешно обновлён.
 
-以 `中国,江苏省,苏州市,昆山市,周市镇` 为例
+На примере `Россия, Московская область, Раменский район, г. Раменское`:
 
-|示例|对应文件|数据增强<br>数据更多、定位更准但编码更慢|
+|Пример|Соответствующий файл|Расширенные данные<br>больше данных, точнее, но геокодирование медленнее|
 |:---|:---|:---|
-|苏州市|geodata.zip<br>geodata_admin_2.zip|geodata_full.zip<br>geodata_admin_2_full.zip|
-|昆山市|geodata_admin_3.zip|geodata_admin_3_full.zip|
-|周市镇|geodata_admin_4.zip|geodata_admin_4_full.zip|
-|苏州市 昆山市|geodata_admin_2_admin_3.zip|geodata_admin_2_admin_3_full.zip|
-|苏州市 周市镇|geodata_admin_2_admin_4.zip|geodata_admin_2_admin_4_full.zip|
-|昆山市 周市镇|geodata_admin_3_admin_4.zip|geodata_admin_3_admin_4_full.zip|
-|苏州市 昆山市 周市镇|geodata_admin_2_admin_3_admin_4.zip|geodata_admin_2_admin_3_admin_4_full.zip|
+|Московская область|geodata.zip<br>geodata_admin_2.zip|geodata_full.zip<br>geodata_admin_2_full.zip|
+|Раменский район|geodata_admin_3.zip|geodata_admin_3_full.zip|
+|г. Раменское|geodata_admin_4.zip|geodata_admin_4_full.zip|
+|Московская область, Раменский район|geodata_admin_2_admin_3.zip|geodata_admin_2_admin_3_full.zip|
+|Московская область, г. Раменское|geodata_admin_2_admin_4.zip|geodata_admin_2_admin_4_full.zip|
+|Раменский район, г. Раменское|geodata_admin_3_admin_4.zip|geodata_admin_3_admin_4_full.zip|
+|Московская область, Раменский район, г. Раменское|geodata_admin_2_admin_3_admin_4.zip|geodata_admin_2_admin_3_admin_4_full.zip|
 
 > [!WARNING]  
-> 受限于 Immich 自身反向地理编码原理，在接近边界时识别效果不佳，而使用级别更低的数据时更容易遇到边界问题，因此更容易导致识别错误，请注意
+> Из-за особенностей обратного геокодирования Immich на границах распознавание ухудшается, а при использовании данных с более низким уровнем граничные проблемы встречаются чаще и сильнее влияют на ошибки распознавания. Учтите это.
 >
-> 如果遇到该情况，可以尝试使用数据增强版本的数据，或者在 [GeoNames](https://www.geonames.org/) 提交相关位置的数据
+> Если вы с этим столкнулись, попробуйте версию с расширенными данными, либо добавьте данные о нужной точке в [GeoNames](https://www.geonames.org/).

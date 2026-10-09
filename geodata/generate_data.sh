@@ -44,11 +44,12 @@ fi
 echo "Запуск python enhance_data.py..."
 python enhance_data.py $FULL_ARGS --output ./geoname_data/cities500.txt.tmp
 
-# Список стран и запуск generate_geodata_nominatim.py
+# Геокодирование через Nominatim по усиленному cities500.txt.tmp
+# (первый проход — по данным базового cities500, чтобы не гнать полный дамп страны)
 LIST=("RU" "BY" "UA")
 for item in "${LIST[@]}"; do
-    echo "Запуск python generate_geodata_nominatim.py $item..."
-    python generate_geodata_nominatim.py --country-code "$item" --data-file ./geoname_data/extra_data/$item.txt
+    echo "Запуск python generate_geodata_nominatim.py $item (по cities500)..."
+    python generate_geodata_nominatim.py --country-code "$item" --data-file ./geoname_data/cities500.txt.tmp
     if [[ $? -ne 0 ]]; then
         echo "Ошибка python generate_geodata_nominatim.py $item! Выход."
         exit 1

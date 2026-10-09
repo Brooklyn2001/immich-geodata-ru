@@ -19,13 +19,6 @@
 | **Gomel**<br>Gomel Oblast<br>Republic of Belarus | **Гомель**<br>Гомельская область<br>Республика Беларусь | **Гомель**<br>Гомельская вобласць<br>Рэспубліка Беларусь |
 | **Brest**<br>Brest Oblast<br>Republic of Belarus | **Брест**<br>Брестская область<br>Республика Беларусь | **Брэст**<br>Брэсцкая вобласць<br>Рэспубліка Беларусь |
 
-## PROMO
-
-Я недавно сделал приложение [Sillage](https://github.com/ZingLix/Sillage/blob/main/README.zh-CN.md), которое автоматически фиксирует маршруты, перелёты, поезда, отели и вместе с фотографиями превращает их в ленту-таймлайн путешествий. Оно умеет подключаться к Immich для управления фото — загляните, если любите путешествовать, не пропустите!
-
-<p align="center">
-  <img src="https://github.com/ZingLix/Sillage/blob/main/imgs/hero.png?raw=true" alt="Sillage icon" width="640" />
-</p>
 
 # Как использовать
 

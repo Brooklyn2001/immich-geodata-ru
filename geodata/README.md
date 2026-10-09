@@ -35,7 +35,7 @@ bash generate_data.sh --ru-pattern "{admin_2} {admin_3}" --output "output/geodat
 
 Прежде чем разбираться, как генерируются данные, нужно понять принцип обратного геокодирования Immich.
 
-> Подробнее о принципе можно прочитать в [этой статье](https://zinglix.xyz/2025/01/23/immich-reverse-geocoding/) (на китайском).
+> Подробнее о принципе можно прочитать в [этой статье](../docs/immich_reverseGeocode.md).
 
 Immich для обратного геокодирования использует следующие файлы (лежат в папке `/build/geodata`):
 

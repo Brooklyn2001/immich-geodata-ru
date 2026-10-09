@@ -132,6 +132,7 @@ def main():
     if not os.path.isfile(GEONAME_DATA_FILE):
         raise Exception(f"Файл '{GEONAME_DATA_FILE}' не существует, скачайте и повторите.")
     output_file = os.path.join("data", f"{country_code}.csv")
+    os.makedirs("data", exist_ok=True)
     existing_data = load_geo_data(output_file)
     process_file(
         GEONAME_DATA_FILE, country_code, output_file, existing_data=existing_data

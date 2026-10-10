@@ -32,7 +32,7 @@ def need_finer_data(data):
 
 
 # Читаем все id из cities500.txt
-with open(cities_file, "r") as f:
+with open(cities_file, "r", encoding="utf-8", newline="") as f:
     existing_ids = set()
     existing_loc = set()
     for line in f:
@@ -42,14 +42,14 @@ with open(cities_file, "r") as f:
 
 shutil.copyfile(cities_file, output_file)
 
-with open(output_file, "a") as append_f:
+with open(output_file, "a", encoding="utf-8", newline="") as append_f:
     # Перебираем все txt-файлы в папке extra_data
     for file_name in os.listdir(extra_data_folder):
         if file_name.endswith(".txt"):
             logger.info(f"Начата обработка {file_name}")
             file_path = os.path.join(extra_data_folder, file_name)
 
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8", newline="") as f:
                 c = 0
                 for line in f:
                     columns = line.split("\t")

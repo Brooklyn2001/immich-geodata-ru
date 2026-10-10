@@ -126,6 +126,8 @@ bash update.sh geodata_admin_2
 
 О том, как это устроено, или о том, как сгенерировать собственные данные, можно узнать [здесь](https://github.com/Brooklyn2001/immich-geodata-ru/tree/main/geodata).
 
+Подробный разбор паттернов гранулярности (`{admin_2}` и т.п.), того, какие уровни попадают в `admin_1..admin_4` для каждой из 15 стран и как работает фолбэк на локальные названия, — в [docs/patterns-granularity.md](docs/patterns-granularity.md).
+
 # License
 
 GPL

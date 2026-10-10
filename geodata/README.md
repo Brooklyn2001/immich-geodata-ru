@@ -120,3 +120,7 @@ python translate.py
 ```bash
 LOG_LEVEL=DEBUG python translate.py
 ```
+
+Подробный разбор паттернов гранулярности (`--ru-pattern`), выбора уровней
+`admin_1..admin_4` по профилям `resolver-profiles.json` для всех 15 стран и влияния
+фолбэка на конечные названия — в [docs/patterns-granularity.md](../docs/patterns-granularity.md).

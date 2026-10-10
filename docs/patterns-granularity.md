@@ -8,6 +8,7 @@
 > Краткая версия для пользователя — в [README](../README.md).
 > Принцип обратного геокодирования Immich — в [immich_reverseGeocode.md](immich_reverseGeocode.md).
 > Описание пайплайна — в [geodata/README.md](../geodata/README.md).
+> Как адаптировать проект под свою страну/язык — в [adapting.md](adapting.md).
 
 ---
 

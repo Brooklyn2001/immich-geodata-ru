@@ -75,20 +75,36 @@ def translate_cities500():
 
             translated_name = None
 
+            # Ветка 1: русское имя из geodata (уже геокодировано через Nominatim).
+            # Инвариант целостности: если точка есть в geodata, но у неё нет
+            # admin_2 (обязательный уровень паттерна) — НЕ пишем частичный результат
+            # и пропускаем строку, иначе Immich «запомнит» неполное название.
             if (
                 country_code in geodata
                 and (longitude, latitude) in geodata[country_code]
             ):
                 location = geodata[country_code][(longitude, latitude)]
                 if not location["admin_2"]:
+                    logger.debug(
+                        f"{row[1]} ({country_code}): в geodata нет admin_2 — "
+                        f"частичный результат не пишем, строка пропущена"
+                    )
                     continue
                 res = ru_pattern.format(**location)
                 if res:
                     translated_name = res
+                    logger.debug(
+                        f"{row[1]} ({country_code}): имя из geodata "
+                        f"(паттерн {ru_pattern!r}) → {res}"
+                    )
 
             if translated_name is None and row[0] in alternate_name:
                 name = alternate_name[row[0]]
                 translated_name = name
+                logger.debug(
+                    f"{row[1]} ({country_code}): фолбэк — русское имя "
+                    f"из alternate_name (geonameid {row[0]}) → {name}"
+                )
 
             if translated_name is None:
                 candidates = row[3].split(",")
@@ -97,10 +113,21 @@ def translate_cities500():
                 )
                 if russian_word:
                     translated_name = russian_word
+                    logger.debug(
+                        f"{row[1]} ({country_code}): фолбэк — русское слово из "
+                        f"кандидатов {candidates!r} → {russian_word}"
+                    )
 
             if translated_name is not None:
                 row[1] = translated_name
                 row[2] = translated_name
+            else:
+                # Ветка «оригинал»: русского имени нигде нет — оставляем локальное
+                # (национальное) название без замены.
+                logger.debug(
+                    f"{row[1]} ({country_code}): русского имени нет, "
+                    f"оставлен оригинал {row[1]!r}"
+                )
 
             # Записываем обработанную строку в выходной файл
             writer.writerow(row)

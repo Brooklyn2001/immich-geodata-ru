@@ -127,9 +127,9 @@ After updating, restart Immich so the data is reloaded. To make the restart auto
 
 You can learn how it works, or how to generate your own data, [here](https://github.com/Brooklyn2001/immich-geodata-ru/tree/main/geodata).
 
-A detailed breakdown of the granularity patterns (`{admin_2}` etc.), which levels map to `admin_1..admin_4` for each of the 15 countries, and how the fallback to local names works — in [docs/patterns-granularity.md](docs/patterns-granularity.md).
+A detailed breakdown of the granularity patterns (`{admin_2}` etc.), which levels map to `admin_1..admin_4` for each of the 15 countries, and how the fallback to local names works — in [docs/patterns-granularity.md](docs/patterns-granularity_EN.md).
 
-Instructions on adapting the project to your own country and/or language — in [docs/adapting.md](docs/adapting.md).
+Instructions on adapting the project to your own country and/or language — in [docs/adapting.md](docs/adapting_EN.md).
 
 # License
 

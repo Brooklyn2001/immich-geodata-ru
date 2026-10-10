@@ -46,7 +46,7 @@ python enhance_data.py $FULL_ARGS --output ./geoname_data/cities500.txt.tmp
 
 # Геокодирование через Nominatim по усиленному cities500.txt.tmp
 # (первый проход — по данным базового cities500, чтобы не гнать полный дамп страны)
-LIST=("RU" "BY" "UA")
+LIST=("RU" "BY" "UA" "KZ" "UZ" "AM" "AZ" "GE" "KG" "TJ" "TM" "MD" "LT" "LV" "EE")
 for item in "${LIST[@]}"; do
     echo "Запуск python generate_geodata_nominatim.py $item (по cities500)..."
     python generate_geodata_nominatim.py --country-code "$item" --data-file ./geoname_data/cities500.txt.tmp

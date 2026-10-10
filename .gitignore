@@ -175,3 +175,9 @@ geodata/geodata
 geodata/geoname_data
 geodata/*.zip
 output/
+
+# Локальные правила агента (не публикуются)
+AGENTS.md
+
+# Локальные планы работ (не публикуются)
+docs/plan-*.md

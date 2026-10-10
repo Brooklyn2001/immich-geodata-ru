@@ -12,8 +12,8 @@ COUNTRY_INFO_FILE="$TARGET_DIR/countryInfo.txt"
 GEOJESON_FILE="$TARGET_DIR/ne_10m_admin_0_countries.geojson"
 EXTRA_DATA_DIR="$TARGET_DIR/extra_data"
 DOWNLOAD_URL="https://download.geonames.org/export/dump/cities500.zip"
-# Список стран, для которых нужны расширенные (полные) данные
-LIST=("RU" "BY" "UA")
+# Список стран бывшего СССР, для которых нужны расширенные (полные) данные
+LIST=("RU" "BY" "UA" "KZ" "UZ" "AM" "AZ" "GE" "KG" "TJ" "TM" "MD" "LT" "LV" "EE")
 
 if [[ "$1" == "--update" ]]; then
     if [[ -d "$TARGET_DIR" ]]; then

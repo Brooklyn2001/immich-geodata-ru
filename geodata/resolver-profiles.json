@@ -1,0 +1,149 @@
+{
+  "_comment": "Профили разрешения названий для обратного геокодирования Nominatim (accept-language: ru). Для каждой страны задаются предпочтительные admin_level (уровни OSM/Nominatim) для ролей admin_1..admin_4. Код выбирает ближайший существующий уровень из указанного набора для каждой роли. admin_1 — высший административный уровень (округ/уезд/гор. федерального значения), admin_2 — область/регион, admin_3 — район/муниципалитет, admin_4 — город/населённый пункт. country_code_verify: проверять, что возвращённая страна совпадает с ожидаемой.",
+  "default": {
+    "admin_levels": {
+      "admin_1": [3, 4],
+      "admin_2": [4, 5, 6],
+      "admin_3": [6, 7, 8, 9],
+      "admin_4": [8, 9, 10]
+    },
+    "country_code_verify": true
+  },
+  "countries": {
+    "RU": {
+      "admin_levels": {
+        "admin_1": [3],
+        "admin_2": [4],
+        "admin_3": [6, 7, 8],
+        "admin_4": [8, 9]
+      },
+      "country_code_verify": true
+    },
+    "BY": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [6],
+        "admin_3": [9],
+        "admin_4": [10]
+      },
+      "country_code_verify": true
+    },
+    "UA": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [6, 7],
+        "admin_3": [8, 9],
+        "admin_4": [10]
+      },
+      "country_code_verify": true
+    },
+    "KZ": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [6, 7],
+        "admin_3": [7],
+        "admin_4": [8]
+      },
+      "country_code_verify": true
+    },
+    "UZ": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [5, 6],
+        "admin_3": [6],
+        "admin_4": [10]
+      },
+      "country_code_verify": true
+    },
+    "AM": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [5],
+        "admin_3": [7],
+        "admin_4": [8]
+      },
+      "country_code_verify": true
+    },
+    "AZ": {
+      "admin_levels": {
+        "admin_1": [6],
+        "admin_2": [6],
+        "admin_3": [8],
+        "admin_4": [8]
+      },
+      "country_code_verify": true
+    },
+    "GE": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [6],
+        "admin_3": [8],
+        "admin_4": [10]
+      },
+      "country_code_verify": true
+    },
+    "KG": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [6],
+        "admin_3": [6],
+        "admin_4": [7]
+      },
+      "country_code_verify": true
+    },
+    "TJ": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [6],
+        "admin_3": [6],
+        "admin_4": [7]
+      },
+      "country_code_verify": true
+    },
+    "TM": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [5],
+        "admin_3": [6],
+        "admin_4": [7]
+      },
+      "country_code_verify": true
+    },
+    "MD": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [8],
+        "admin_3": [8],
+        "admin_4": [9, 10]
+      },
+      "country_code_verify": true
+    },
+    "LT": {
+      "admin_levels": {
+        "admin_1": [4],
+        "admin_2": [5],
+        "admin_3": [8],
+        "admin_4": [10]
+      },
+      "country_code_verify": true
+    },
+    "LV": {
+      "admin_levels": {
+        "admin_1": [5],
+        "admin_2": [8],
+        "admin_3": [9],
+        "admin_4": [10]
+      },
+      "country_code_verify": true
+    },
+    "EE": {
+      "admin_levels": {
+        "admin_1": [6],
+        "admin_2": [7],
+        "admin_3": [8, 9],
+        "admin_4": [9, 10]
+      },
+      "country_code_verify": true
+    }
+  }
+}

@@ -25,7 +25,7 @@ All four places must contain the same set of country ISO codes:
 
 ### 1.2 The country profile in `resolver-profiles.json`
 
-This is a required part ("Variant C"). Without a profile the country will not be geocoded correctly: the `admin_level` hierarchy in OSM/Nominatim is inconsistent across countries, so preferred levels for the `admin_1..admin_4` roles are defined per country.
+This is a required part. Without a profile the country will not be geocoded correctly: the `admin_level` hierarchy in OSM/Nominatim is inconsistent across countries, so preferred levels for the `admin_1..admin_4` roles are defined per country.
 
 ```json
 "XX": {

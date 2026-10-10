@@ -45,7 +45,7 @@ These are the administrative levels inside a country (roles):
 | `admin_3` | district / municipality |
 | `admin_4` | city / populated place |
 
-Which exact levels go into each role is determined by **per-country profiles** in `resolver-profiles.json` (Variant C), not by a single global rule. The reason: the `admin_level` hierarchy in OSM/Nominatim is **inconsistent across countries**, and the coverage of Russian names also differs.
+Which exact levels go into each role is determined by **per-country profiles** in `resolver-profiles.json`, not by a single global rule. The reason: the `admin_level` hierarchy in OSM/Nominatim is **inconsistent across countries**, and the coverage of Russian names also differs.
 
 ## 3. The level selection mechanism: `pick_admin_levels`
 

@@ -37,6 +37,9 @@ def translate_country_info(input_path, output_path, translations_path):
                 )
 
             translated_name = translations.get(fields[0])
+            if isinstance(translated_name, list):
+                # ru.json может содержать массив вариантов (напр. RU) — берём первый
+                translated_name = translated_name[0]
             if translated_name:
                 fields[4] = translated_name
                 translated_count += 1

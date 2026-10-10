@@ -1,0 +1,80 @@
+# Скачивание полного набора данных GeoNames в GitHub Actions и выгрузка
+# как артефакта. Нужно, когда локальная сеть до download.geonames.org
+# медленная, а в CI — быстрая. Запуск вручную (Actions -> Run workflow),
+# затем скачать artifact geonames-data из завершённого прогона и распаковать:
+# внутри — готовая папка geoname_data/, которую нужно положить в geodata/
+# (т.е. итог: geodata/geoname_data/...)
+name: Download GeoNames
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up directories
+        run: |
+          mkdir -p geodata/geoname_data/extra_data
+
+      - name: Download country dumps (extra_data)
+        run: |
+          LIST=("RU" "BY" "UA" "KZ" "UZ" "AM" "AZ" "GE" "KG" "TJ" "TM" "MD" "LT" "LV" "EE")
+          for item in "${LIST[@]}"; do
+            curl -fL -o "geodata/geoname_data/extra_data/$item.zip" \
+              "https://download.geonames.org/export/dump/$item.zip"
+            unzip -o "geodata/geoname_data/extra_data/$item.zip" \
+              -d "geodata/geoname_data/extra_data"
+            rm -f "geodata/geoname_data/extra_data/$item.zip"
+          done
+          rm -f "geodata/geoname_data/extra_data/readme.txt"
+
+      - name: Download cities500
+        run: |
+          curl -fL -o geodata/geoname_data/cities500.zip \
+            https://download.geonames.org/export/dump/cities500.zip
+          unzip -o geodata/geoname_data/cities500.zip -d geodata/geoname_data
+          rm -f geodata/geoname_data/cities500.zip
+
+      - name: Download alternateNamesV2
+        run: |
+          curl -fL -o geodata/geoname_data/alternateNamesV2.zip \
+            https://download.geonames.org/export/dump/alternateNamesV2.zip
+          unzip -o geodata/geoname_data/alternateNamesV2.zip -d geodata/geoname_data
+          rm -f geodata/geoname_data/alternateNamesV2.zip
+
+      - name: Download small files
+        run: |
+          curl -fL -o geodata/geoname_data/admin1CodesASCII.txt \
+            https://download.geonames.org/export/dump/admin1CodesASCII.txt
+          curl -fL -o geodata/geoname_data/admin2Codes.txt \
+            https://download.geonames.org/export/dump/admin2Codes.txt
+          curl -fL -o geodata/geoname_data/countryInfo.txt \
+            https://download.geonames.org/export/dump/countryInfo.txt
+          curl -fL -o geodata/geoname_data/ne_10m_admin_0_countries.geojson \
+            https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson
+
+      - name: Verify downloaded files
+        run: |
+          set -e
+          ls -la geodata/geoname_data/
+          ls -la geodata/geoname_data/extra_data/
+          test -s geodata/geoname_data/cities500.txt
+          test -s geodata/geoname_data/alternateNamesV2.txt
+          test -s geodata/geoname_data/admin1CodesASCII.txt
+          test -s geodata/geoname_data/admin2Codes.txt
+          test -s geodata/geoname_data/countryInfo.txt
+          test -s geodata/geoname_data/ne_10m_admin_0_countries.geojson
+          test -s geodata/geoname_data/extra_data/RU.txt
+          echo "ALL FILES OK"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: geonames-data
+          path: geodata/geoname_data/
+          if-no-files-found: error

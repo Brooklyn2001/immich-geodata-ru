@@ -25,7 +25,7 @@ All four places must contain the same set of country ISO codes:
 
 ### 1.2 The country profile in `resolver-profiles.json`
 
-This is a required part ("Variant C" in AGENTS.md). Without a profile the country will not be geocoded correctly: the `admin_level` hierarchy in OSM/Nominatim is inconsistent across countries, so preferred levels for the `admin_1..admin_4` roles are defined per country.
+This is a required part ("Variant C"). Without a profile the country will not be geocoded correctly: the `admin_level` hierarchy in OSM/Nominatim is inconsistent across countries, so preferred levels for the `admin_1..admin_4` roles are defined per country.
 
 ```json
 "XX": {
@@ -90,14 +90,14 @@ This function looks for "a word in the target language" among the point's candid
 
 ### 2.4 The country language (i18n-iso-countries)
 
-Immich reads the country name **hardcoded from `en.json`**, but the **data is taken from `ru.json`** (see AGENTS.md and `geodata/translate_country_info.py`). Do not confuse the source with the reading place:
+Immich reads the country name **hardcoded from `en.json`**, but the **data is taken from `ru.json`** (see `geodata/translate_country_info.py`). Do not confuse the source with the reading place:
 
 - instead of `ru.json`, the source of country names will become the target-language JSON (for example `de.json`);
 - `en.json` remains the **place** where Immich reads the locale — the names in the target language go there.
 
 ### 2.5 The semantics of the `--ru-pattern` flag
 
-The flag/file names are focused on Russian (a legacy of the original `--cn-pattern`). This is cosmetic and does not need to be changed. Important (per AGENTS.md): **do not roll back** the logic to the Chinese `cn`/`amap` solutions — this Russian implementation is already ported to Nominatim.
+The flag/file names are focused on Russian (a legacy of the original `--cn-pattern`). This is cosmetic and does not need to be changed. Important: **do not roll back** the logic to the Chinese `cn`/`amap` solutions — this Russian implementation is already ported to Nominatim.
 
 ---
 

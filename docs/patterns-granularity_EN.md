@@ -171,7 +171,7 @@ These "trailing spaces" do not end up in the production file (the default patter
 3. **Russian word from the candidates** (`alternatenames` in cities500): the first word consisting only of Cyrillic (`is_russian`).
 4. **Original without replacement**: if Russian is not found at any step — the **local (national) name** remains.
 
-Step 4 is a **deliberate invariant from AGENTS.md**, not a bug: if there is no Russian name at the micro level, we do not invent or replace it, but keep the national one.
+Step 4 is a **deliberate invariant**, not a bug: if there is no Russian name at the micro level, we do not invent or replace it, but keep the national one.
 
 ### Why the fallback appears
 

@@ -69,7 +69,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: geonames-src
-          path: geodata/
+          path: geodata/geoname_data
       - name: Geocode group
         run: |
           bash geodata/geocode_group.sh ${{ matrix.group.countries }}
@@ -118,13 +118,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: geonames-src
-          path: geodata/
+          path: geodata/geoname_data
       - name: Merge geocoded CSVs
         run: |
           mkdir -p geodata/data
-          cp geo1/data/*.csv geodata/data/ 2>/dev/null || true
-          cp geo2/data/*.csv geodata/data/
-          cp geo3/data/*.csv geodata/data/
+          cp geo1/*.csv geodata/data/ 2>/dev/null || true
+          cp geo2/*.csv geodata/data/
+          cp geo3/*.csv geodata/data/
           echo "Объединённые CSV для стран:"
           ls -1 geodata/data
       - name: Set current date as env variable

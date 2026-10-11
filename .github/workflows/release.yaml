@@ -1,16 +1,87 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Сборка Release с разбиением геокодинга на группы по 5 стран.
+# Причина: геокодинг всех 15 стран через Nominatim (~1 запрос/с) не укладывается
+# в 6-часовой лимит job'а GitHub Actions (см. run #3, отмена на Эстонии).
+# Поэтому: prepare скачивает исходники, 3 параллельные geocode-job'ы по 5 стран
+# геокодят свою группу, build-job собирает translate+zip и публикует Release.
 name: Release
 
 on:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 defaults:
   run:
     shell: bash
 
+env:
+  PYTHON_VERSION: "3.11"
+
 jobs:
-  release:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install
+        run: |
+          pip3 install -r requirements.txt
+      - name: Prepare GeoNames sources
+        run: |
+          cd geodata
+          bash prepare_geoname_data.sh
+      - name: Upload source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: geonames-src
+          path: geodata/geoname_data
+          if-no-files-found: error
+
+  geocode:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        group:
+          - { name: g1, countries: "RU BY UA KZ UZ" }
+          - { name: g2, countries: "AM AZ GE KG TJ" }
+          - { name: g3, countries: "TM MD LT LV EE" }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install
+        run: |
+          pip3 install -r requirements.txt
+      - name: Download source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: geonames-src
+          path: geodata/
+      - name: Geocode group
+        run: |
+          bash geodata/geocode_group.sh ${{ matrix.group.countries }}
+      - name: Upload geocoded artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: geocoded-${{ matrix.group.name }}
+          path: geodata/data
+          if-no-files-found: error
+
+  build:
+    needs: [geocode]
     environment: Action Env
     permissions:
       contents: write
@@ -24,14 +95,47 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ env.PYTHON_VERSION }}
       - name: Install
         run: |
           pip3 install -r requirements.txt
+      - name: Download geocoded groups
+        uses: actions/download-artifact@v4
+        with:
+          name: geocoded-g1
+          path: geo1
+      - name: Download geocoded groups
+        uses: actions/download-artifact@v4
+        with:
+          name: geocoded-g2
+          path: geo2
+      - name: Download geocoded groups
+        uses: actions/download-artifact@v4
+        with:
+          name: geocoded-g3
+          path: geo3
+      - name: Download source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: geonames-src
+          path: geodata/
+      - name: Merge geocoded CSVs
+        run: |
+          mkdir -p geodata/data
+          cp geo1/data/*.csv geodata/data/ 2>/dev/null || true
+          cp geo2/data/*.csv geodata/data/
+          cp geo3/data/*.csv geodata/data/
+          echo "Объединённые CSV для стран:"
+          ls -1 geodata/data
       - name: Set current date as env variable
         run: echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-      - name: Build
-        run: bash release.sh
+      - name: Build (skip geocoding)
+        run: |
+          # cities500.txt.tmp нужен translate.py — создаём базовый enhance
+          cd geodata
+          python enhance_data.py --output ./geoname_data/cities500.txt.tmp
+          cd ..
+          SKIP_GEOCODE=1 bash release.sh
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:

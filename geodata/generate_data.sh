@@ -8,6 +8,7 @@ TODAY_DATE=${TODAY_DATE:-$(date -u +"%Y-%m-%d")}
 
 RU_PATTERN="{admin_2}"
 FULL=false
+SKIP_GEOCODE=false
 OUTPUT_FOLDER="./output_tmp"
 OUTPUT_FILE="./output/geodata.zip"
 
@@ -26,6 +27,10 @@ while [[ $# -gt 0 ]]; do
       FULL=true
       shift
       ;;
+    --skip-geocode)
+      SKIP_GEOCODE=true
+      shift
+      ;;
     *)
       echo "Неизвестный параметр: $1"
       exit 1
@@ -35,26 +40,30 @@ done
 
 rm -rf $OUTPUT_FOLDER
 
-FULL_ARGS=""
-if [ "$FULL" = true ]; then
-  FULL_ARGS=" --full"
+# Режим --skip-geocode: data/<CODE>.csv и cities500.txt.tmp уже подготовлены
+# отдельными geocode-job'ами в CI — здесь только собираем (translate + zip).
+if [ "$SKIP_GEOCODE" = false ]; then
+  FULL_ARGS=""
+  if [ "$FULL" = true ]; then
+    FULL_ARGS=" --full"
+  fi
+
+  # Запуск python enhance_data.py
+  echo "Запуск python enhance_data.py..."
+  python enhance_data.py $FULL_ARGS --output ./geoname_data/cities500.txt.tmp
+
+  # Геокодирование через Nominatim по усиленному cities500.txt.tmp
+  # (первый проход — по данным базового cities500, чтобы не гнать полный дамп страны)
+  LIST=("RU" "BY" "UA" "KZ" "UZ" "AM" "AZ" "GE" "KG" "TJ" "TM" "MD" "LT" "LV" "EE")
+  for item in "${LIST[@]}"; do
+      echo "Запуск python generate_geodata_nominatim.py $item (по cities500)..."
+      python generate_geodata_nominatim.py --country-code "$item" --data-file ./geoname_data/cities500.txt.tmp
+      if [[ $? -ne 0 ]]; then
+          echo "Ошибка python generate_geodata_nominatim.py $item! Выход."
+          exit 1
+      fi
+  done
 fi
-
-# Запуск python enhance_data.py
-echo "Запуск python enhance_data.py..."
-python enhance_data.py $FULL_ARGS --output ./geoname_data/cities500.txt.tmp
-
-# Геокодирование через Nominatim по усиленному cities500.txt.tmp
-# (первый проход — по данным базового cities500, чтобы не гнать полный дамп страны)
-LIST=("RU" "BY" "UA" "KZ" "UZ" "AM" "AZ" "GE" "KG" "TJ" "TM" "MD" "LT" "LV" "EE")
-for item in "${LIST[@]}"; do
-    echo "Запуск python generate_geodata_nominatim.py $item (по cities500)..."
-    python generate_geodata_nominatim.py --country-code "$item" --data-file ./geoname_data/cities500.txt.tmp
-    if [[ $? -ne 0 ]]; then
-        echo "Ошибка python generate_geodata_nominatim.py $item! Выход."
-        exit 1
-    fi
-done
 
 rm -rf "$OUTPUT_FOLDER"
 mkdir -p "$OUTPUT_FOLDER"

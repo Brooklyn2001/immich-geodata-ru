@@ -1,8 +1,9 @@
-# Сборка Release с разбиением геокодинга на группы по 5 стран.
+# Сборка Release с разбиением геокодинга на группы стран.
 # Причина: геокодинг всех 15 стран через Nominatim (~1 запрос/с) не укладывается
 # в 6-часовой лимит job'а GitHub Actions (см. run #3, отмена на Эстонии).
-# Поэтому: prepare скачивает исходники, 3 параллельные geocode-job'ы по 5 стран
-# геокодят свою группу, build-job собирает translate+zip и публикует Release.
+# Поэтому: prepare скачивает исходники, параллельные geocode-job'ы геокодят свою
+# группу стран (баланс по числу точек: RU отдельно, UA+BY, остальные по остатку),
+# build-job собирает translate+zip и публикует Release.
 name: Release
 
 on:
@@ -49,9 +50,10 @@ jobs:
       fail-fast: false
       matrix:
         group:
-          - { name: g1, countries: "RU BY UA KZ UZ" }
-          - { name: g2, countries: "AM AZ GE KG TJ" }
-          - { name: g3, countries: "TM MD LT LV EE" }
+          - { name: g1, countries: "RU" }
+          - { name: g2, countries: "UA BY" }
+          - { name: g3, countries: "KZ UZ AM TJ KG" }
+          - { name: g4, countries: "AZ GE TM MD LT LV EE" }
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -114,6 +116,11 @@ jobs:
         with:
           name: geocoded-g3
           path: geo3
+      - name: Download geocoded groups
+        uses: actions/download-artifact@v4
+        with:
+          name: geocoded-g4
+          path: geo4
       - name: Download source artifact
         uses: actions/download-artifact@v4
         with:
@@ -123,8 +130,9 @@ jobs:
         run: |
           mkdir -p geodata/data
           cp geo1/*.csv geodata/data/ 2>/dev/null || true
-          cp geo2/*.csv geodata/data/
-          cp geo3/*.csv geodata/data/
+          cp geo2/*.csv geodata/data/ 2>/dev/null || true
+          cp geo3/*.csv geodata/data/ 2>/dev/null || true
+          cp geo4/*.csv geodata/data/
           echo "Объединённые CSV для стран:"
           ls -1 geodata/data
       - name: Set current date as env variable

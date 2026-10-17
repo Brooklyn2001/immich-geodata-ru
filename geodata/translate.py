@@ -32,6 +32,32 @@ with open("./geoname_data/admin1CodesASCII.txt", "r", encoding="utf-8") as f:
         admin_1_set.add(parts[0])
 
 
+def _is_valid_geonameid(value):
+    """Возвращает True, если value строго положительное целое (валидный geonameid).
+
+    Immich делает id = Number.parseInt(lineSplit[0]); нечисловое первое поле
+    даёт NaN в integer-колонке id и роняет импорт geodata. Поэтому отбрасываем
+    всё, что не является целым числом.
+    """
+    if value is None:
+        return False
+    s = str(value).strip()
+    return s.isdigit() and int(s) > 0
+
+
+def _to_float(value):
+    """Возвращает float(value) или None, если привести нельзя."""
+    if value is None:
+        return None
+    s = str(value).strip()
+    if not s:
+        return None
+    try:
+        return float(s)
+    except ValueError:
+        return None
+
+
 def load_geodata_list(folder_path):
     geo_dict = {}
 
@@ -59,12 +85,32 @@ def translate_cities500():
     ensure_folder_exists(output_file)
 
     with open(input_file, "r", encoding="utf-8") as infile, open(
-        output_file, "w", encoding="utf-8"
+        output_file, "w", encoding="utf-8", newline=""
     ) as outfile:
         reader = csv.reader(infile, delimiter="\t")
-        writer = csv.writer(outfile, delimiter="\t")
+        # lineterminator="\n" + newline="" дают чистые \n (без \r\r\n на Windows).
+        writer = csv.writer(outfile, delimiter="\t", lineterminator="\n")
 
         for row in reader:
+            # Отбрасываем строки, которые сломали бы импорт geodata в Immich:
+            # - geonameid (кол. 0) идёт в integer-колонку id — если он не число,
+            #   Number.parseInt вернёт NaN и Postgres упадёт с
+            #   'invalid input syntax for type integer: "NaN"'.
+            # - lat/lon (кол. 4/5) идут в double — нечисловые дадут мусорные точки.
+            # - строка короче 19 полей ломает modificationDate (row[18] = undefined).
+            if len(row) < 19 or not _is_valid_geonameid(row[0]):
+                logger.warning(
+                    f"Строка {row[0]!r} с некорректным geonameid пропущена "
+                    f"(привела бы к id: NaN у Immich)"
+                )
+                continue
+            if _to_float(row[4]) is None or _to_float(row[5]) is None:
+                logger.warning(
+                    f"Строка geonameid={row[0]!r} с некорректными координатами "
+                    f"({row[4]!r},{row[5]!r}) пропущена"
+                )
+                continue
+
             country_code = row[8]  # код страны
             latitude = str(row[4])  # широта
             longitude = str(row[5])  # долгота
@@ -153,10 +199,10 @@ def translate_admin1():
         ensure_folder_exists(output_file)
 
         with open(input_file, "r", encoding="utf-8") as infile, open(
-            output_file, "w", encoding="utf-8"
+            output_file, "w", encoding="utf-8", newline=""
         ) as outfile:
             reader = csv.reader(infile, delimiter="\t")
-            writer = csv.writer(outfile, delimiter="\t")
+            writer = csv.writer(outfile, delimiter="\t", lineterminator="\n")
 
             for row in reader:
                 res = None

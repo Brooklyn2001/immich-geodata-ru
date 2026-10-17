@@ -54,6 +54,15 @@ with open(output_file, "a", encoding="utf-8", newline="") as append_f:
                 for line in f:
                     columns = line.split("\t")
 
+                    # Пропускаем битые строки ещё на этапе формирования cities500.txt.tmp:
+                    # нечисловой geonameid (кол. 0) дал бы Immich id: NaN и уронил бы
+                    # импорт geodata; финальную отбраковку делает translate.py.
+                    if len(columns) < 19 or not columns[0].strip().isdigit():
+                        logger.warning(
+                            f"Строка {columns[0]!r} с некорректным geonameid пропущена"
+                        )
+                        continue
+
                     # Первый id
                     id_value = columns[0]
                     loc = (columns[4], columns[5])
